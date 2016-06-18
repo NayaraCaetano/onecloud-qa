@@ -38,7 +38,7 @@ class ProviderFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Provider
 
-    name = faker.text()
+    name = factory.LazyAttribute(lambda obj: '{0}'.format(faker.word()))
 
 
 class ServiceFactory(factory.django.DjangoModelFactory):
@@ -50,4 +50,4 @@ class ServiceFactory(factory.django.DjangoModelFactory):
     cpu = faker.random_number()
     memory = faker.random_number()
     disk = faker.random_number()
-    price = faker.random_number()
+    price = faker.random_int()
