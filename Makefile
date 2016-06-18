@@ -10,3 +10,6 @@ setup:
 
 dev:
 	python manage.py runserver
+
+functionaltests:
+	lettuce functional_tests/features
