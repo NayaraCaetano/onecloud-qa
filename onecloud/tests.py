@@ -35,3 +35,11 @@ class OneCloudTestCase(BaseTestCase):
     def test_api_nao_edita_service(self):
         response = self.client.put(self.URL_SERVICES)
         self.assertEquals(405, response.status_code)
+
+    def test_api_nao_deleta_provider(self):
+        #  Não existe nenhuma view rest criada para gerencia do model Provider
+        self.assertTrue(True)
+
+    def test_api_nao_deleta_service(self):
+        response = self.client.delete(self.URL_SERVICES)
+        self.assertEquals(405, response.status_code)
