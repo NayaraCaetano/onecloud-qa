@@ -80,6 +80,7 @@ def initialize_server():
 def initialize_pages():
     return {
         "login_admin": "/admin/login/",
+        "logout_admin": "/admin/logout/",
         "admin": "/admin/"
     }
 
