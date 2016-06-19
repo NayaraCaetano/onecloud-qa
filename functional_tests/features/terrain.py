@@ -3,6 +3,7 @@
 import subprocess
 import os
 import unicodedata
+import pexpect
 
 from django.core.wsgi import get_wsgi_application
 from lettuce import before, after, world
@@ -61,25 +62,18 @@ def teardown_environment(total):
     print "%d Features\t(%d Passed)" % (total.features_ran, total. features_passed)
     print "%d Scenario\t(%d Passed)" % (total.scenarios_ran, total.scenarios_passed)
     print "%d Steps" % (total.steps)
-    kill_processo('127.0.0.1:7000')
+    kill_processo_server()
 
     DISPLAY.stop()
 
 
-def kill_processo(busca):
-    get_pid = 'ps -eo pid,command | grep "' + busca + '" | grep -v grep | awk \'{print $1}\''
-    pid = int(subprocess.check_output(get_pid, shell=True))
-    subprocess.call(['kill', '-SIGINT', str(pid)])
+def kill_processo_server():
+    world.server.sendcontrol('c')
 
 
 def initialize_server():
-    subprocess.call(['touch', '/tmp/input.in', '/tmp/out.out', '/tmp/tmp.tmp'])
-    file_input = open('/tmp/input.in', 'w')
-    file_out = open('/tmp/out.out', 'w')
-    file_tmp = open('/tmp/tmp.tmp', 'w')
-    world.server = subprocess.Popen(
-        ["coverage", "run", "--omit", "*/.envs/*.*", "manage.py", "runserver", "--noreload", world.settings_test, '127.0.0.1:7000'],
-        stdin=file_input, stdout=file_out, stderr=file_tmp
+    world.server = pexpect.spawn(
+        "coverage run --omit */.envs/*.* manage.py runserver --noreload " + world.settings_test + ' 127.0.0.1:7000'
     )
 
 
