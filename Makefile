@@ -12,4 +12,7 @@ dev:
 	python manage.py runserver
 
 functionaltests:
-	lettuce functional_tests/features
+	lettuce functional_tests/features --xunit-file=functional_test_results.xml --with-xunit
+
+unittests:
+	py.test --junitxml=unit_test_results.xml
