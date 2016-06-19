@@ -12,7 +12,7 @@ dev:
 	python manage.py runserver
 
 setuptests:
-	sudo apt-get install xvfb -y
+	sudo apt-get install xvfb python-dev libnss3 -y
 	pip install -r requirements/test.txt
 
 functionaltests:
