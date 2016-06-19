@@ -3,6 +3,7 @@
 import subprocess
 import os
 
+from django.core.wsgi import get_wsgi_application
 from lettuce import before, after, world
 from pyvirtualdisplay import Display
 from splinter.browser import Browser
@@ -13,6 +14,7 @@ DISPLAY = Display(visible=0, size=(1024, 2000))
 @before.all
 def initial_setup():
     os.environ['DJANGO_SETTINGS_MODULE'] = 'settings.functional_test'
+    application = get_wsgi_application()
 
     world.base_url = 'http://localhost:7000'
     world.settings_test = '--settings=settings.functional_test'
@@ -81,7 +83,8 @@ def initialize_pages():
     return {
         "login_admin": "/admin/login/",
         "logout_admin": "/admin/logout/",
-        "admin": "/admin/"
+        "admin": "/admin/",
+        "index": "/"
     }
 
 

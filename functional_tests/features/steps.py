@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import re
+
 from lettuce import step, world
 
 
@@ -51,3 +53,72 @@ def eu_devo_ver_a_mensagem_de_erro_contendo_group1(step, group1):
             if group1 in element.text:
                 return True
     assert False
+
+
+@step(u'.*[^não] devo ver na linha da tabela os conte[úu]dos: (.+)$')
+@step(u'.* eu devo ver na linha da tabela os contéudos: (.+)$')
+@step(u'.*[^não] devo ver na linha da tabela o conte[úu]do: (.+)$')
+@step(u'.*[^não] devo ver na linha da tabela o conte[úu]do (.+)$')
+def entao_eu_devo_ver_na_linha_da_tabela_os_conteudos(step, group1):
+    assert encontrar_elemento_por_x_conteudos('tr', processa_group(group1), '')
+
+
+@step(u'.*[^não] devo ver na primeira linha do corpo da tabela os conte[úu]dos: (.+)$')
+def entao_eu_devo_ver_na_primeira_linha_do_corpo_da_tabela_os_conteudos(step, group1):
+    assert encontrar_elemento_por_x_conteudos('tr:nth(1)', processa_group(group1), '')
+
+
+@step(u'.* a tabela deve ter "([^"]*)" linhas')
+def entao_a_tabela_deve_ter_group1_linhas(step, group1):
+    resultado = world.browser.evaluate_script('$("tr")')
+    assert len(resultado) == int(group1), 'resultado: "%s" / esperado: "%s"' % (len(resultado), int(group1))
+
+
+@step(u'.* clicar no link "([^"]*)"$')
+@step(u'.* clico no link "([^"]*)"$')
+def e_clico_no_link_group1(step, group1):
+    hrefs = encontrar_link_por_texto(group1)
+    hrefs[0].click()
+
+
+@step(u'.*[^não] tenho cadastro do serviço "([^"]*)", "([^"]*)", cpu "([^"]*)", memória "([^"]*)", disco "([^"]*)" e preço "([^"]*)"')
+def e_tenho_cadastro_do_servico_group1_group2_cpu_group3_memoria_group4_disco_group5_e_preco_group6(step, group1, group2, group3, group4, group5, group6):
+    from onecloud.models import Provider, Service
+    provedor, _ = Provider.objects.get_or_create(name=group2)
+    Service.objects.get_or_create(
+        name=group1,
+        provider=provedor,
+        cpu=group3,
+        memory=group4,
+        disk=group5,
+        price=group6
+    )
+
+
+def encontrar_elemento_por_x_conteudos(parent_seletor, conteudos, descendant_seletor):
+    seletor_inicio = u'$("' + parent_seletor + ''
+    seletor_final = u':visible' + descendant_seletor + '")'
+    seletor_meio = u''
+
+    for conteudo in conteudos:
+        seletor_meio = seletor_meio + u':contains(\'' + conteudo + '\')'
+
+    seletor = seletor_inicio + seletor_meio + seletor_final
+
+    return world.browser.evaluate_script(seletor)
+
+
+def processa_group(super_group):
+    r_get_aspas = re.compile('"([^"]*)"')
+    groups = r_get_aspas.findall(super_group)
+    groups = [group.replace("''", '"') for group in groups]
+    group_final = []
+    for group in groups:
+        group_final.append(group)
+    return group_final
+
+
+def encontrar_link_por_texto(texto):
+    hrefs = [href for href in encontrar_elemento_por_x_conteudos('[href]', [texto], '') if (href.text.lower().split("\n")[0] == texto.lower())]
+    if hrefs:
+        return hrefs
