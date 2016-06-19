@@ -8,6 +8,8 @@ DEBUG = True
 ROOT_URLCONF = 'onecloud.urls'
 ALLOWED_HOSTS = ['*']
 
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

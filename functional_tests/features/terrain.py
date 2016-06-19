@@ -2,6 +2,7 @@
 
 import subprocess
 import os
+import unicodedata
 
 from django.core.wsgi import get_wsgi_application
 from lettuce import before, after, world
@@ -42,8 +43,11 @@ def initialize_scenario(scenario):
 
 @after.each_step
 def teardown_some_step(step):
-    #  Todo: captura tela se erro, se acontecer
-    pass
+    from django.conf import settings
+    if step.failed:
+        diretorio = settings.ROOT + '/functional_tests/screenshots/' + step.scenario.feature.name + '/'
+        nome_arquivo = step.scenario.name + " - " + step.sentence
+        captura_tela(diretorio, nome_arquivo)
 
 
 @after.each_feature
@@ -92,3 +96,24 @@ def initialize_users():
     return {
         "admin": ['admin', '123']
     }
+
+
+def captura_tela(diretorio, nome_arquivo):
+    diretorio = normalize_string(diretorio)
+    nome_arquivo = normalize_string(nome_arquivo)
+    nome_arquivo = nome_arquivo.replace('/', '_')
+
+    imagem = diretorio + nome_arquivo + '.png'
+
+    cria_pasta(diretorio)
+
+    world.browser.driver.save_screenshot(imagem)
+
+
+def normalize_string(string):
+    return unicodedata.normalize('NFKD', string).encode('ASCII', 'ignore')
+
+
+def cria_pasta(folder):
+    if not os.path.isdir(folder):
+        os.makedirs(folder)
