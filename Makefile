@@ -11,6 +11,10 @@ setup:
 dev:
 	python manage.py runserver
 
+setuptests:
+	sudo apt-get install xvfb -y
+	pip install -r requirements/test.txt
+
 functionaltests:
 	lettuce functional_tests/features --xunit-file=functional_test_results.xml --with-xunit
 
