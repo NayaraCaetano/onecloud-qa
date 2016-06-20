@@ -16,6 +16,21 @@ Para rodar o servidor localmente, execute:
 
     make dev
 
+# Testes
+
+
+Setup de testes: 
+
+    make setuptests
+
+Para rodar os testes unitários, execute:
+
+    make unittests
+
+Para rodar os testes funcionais, execute:
+
+    make functionaltests
+
 ## Author
 
 Lucas Magnum - https://github.com/LucasMagnum
