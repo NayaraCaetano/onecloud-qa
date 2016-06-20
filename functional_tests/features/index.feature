@@ -16,6 +16,7 @@ Funcionalidade: Index do Sistema
         Dado que tenho cadastro do serviço "Serviço 1", "Provedor 1", cpu "10", memória "7", disco "60" e preço "28"
         E tenho cadastro do serviço "Serviço 2", "Provedor 2", cpu "11", memória "8", disco "61" e preço "29"
         E que eu visito a página "index"
+        E aguardo "2" segundos
         Então eu devo ver na linha da tabela os conteúdos: "Serviço 1", "Provedor 1", "10", "7", "60", "28"
         E devo ver na linha da tabela os conteúdos: "Serviço 2", "Provedor 2", "11", "8", "61", "29"
 

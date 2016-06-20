@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import time
 
 from lettuce import step, world
 
@@ -93,6 +94,12 @@ def e_tenho_cadastro_do_servico_group1_group2_cpu_group3_memoria_group4_disco_gr
         disk=group5,
         price=group6
     )
+
+
+@step(u'.* aguardo "([^"]*)" segundos')
+@step(u'.* aguardo "([^"]*)" segundo')
+def e_aguardo_group1_segundos(step, group1):
+    time.sleep(int(group1))
 
 
 def encontrar_elemento_por_x_conteudos(parent_seletor, conteudos, descendant_seletor):
