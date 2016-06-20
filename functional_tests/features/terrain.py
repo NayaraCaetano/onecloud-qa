@@ -3,7 +3,6 @@
 import subprocess
 import os
 import unicodedata
-import pexpect
 
 from django.core.wsgi import get_wsgi_application
 from lettuce import before, after, world
@@ -68,12 +67,17 @@ def teardown_environment(total):
 
 
 def kill_processo_server():
-    world.server.sendcontrol('c')
+    world.server.terminate()
 
 
 def initialize_server():
-    world.server = pexpect.spawn(
-        "coverage run --omit */.envs/*.* manage.py runserver --noreload " + world.settings_test + ' 127.0.0.1:7000'
+    subprocess.call(['touch', '/tmp/input.in', '/tmp/out.out', '/tmp/tmp.tmp'])
+    file_input = open('/tmp/input.in', 'w')
+    file_out = open('/tmp/out.out', 'w')
+    file_tmp = open('/tmp/tmp.tmp', 'w')
+    world.server = subprocess.Popen(
+        ["python", "manage.py", "runserver", "--noreload", world.settings_test, '127.0.0.1:7000'],
+        stdin=file_input, stdout=file_out, stderr=file_tmp
     )
 
 
